@@ -42,6 +42,10 @@ func (s *APIServer) handleCreateAccount(w http.ResponseWriter, r *http.Request) 
 }
 
 func (s *APIServer) handleGetAccount(w http.ResponseWriter, r *http.Request) error {
+	id := mux.Vars(r)["id"]
+	fmt.Println(id)
+	WriteJSON(w, http.StatusOK, &Account{})
+
 	account := NewAccount("Israel", "Benkong")
 	return WriteJSON(w, http.StatusOK, account)
 }
@@ -64,8 +68,8 @@ type ApiError struct {
 type apiFunc func(http.ResponseWriter, *http.Request) error
 
 func WriteJSON(w http.ResponseWriter, status int, v any) error {
-	w.WriteHeader(status)
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
 	return json.NewEncoder(w).Encode(v)
 }
 
