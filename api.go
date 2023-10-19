@@ -9,9 +9,10 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func NewAPIServer(listenAddr string) *APIServer {
+func NewAPIServer(listenAddr string, store Storage) *APIServer {
 	return &APIServer{
 		listenAddr: listenAddr,
+		store:      store,
 	}
 }
 
@@ -60,6 +61,7 @@ func (s *APIServer) handleTransfer(w http.ResponseWriter, r *http.Request) error
 
 type APIServer struct {
 	listenAddr string
+	store      Storage
 }
 
 type ApiError struct {
