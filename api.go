@@ -39,7 +39,29 @@ func (s *APIServer) handleAccount(w http.ResponseWriter, r *http.Request) error 
 }
 
 func (s *APIServer) handleCreateAccount(w http.ResponseWriter, r *http.Request) error {
+	/*
+		You can also use
+		acctReq:= CreateAccountRequest{}
+		if err:=json.NewDecoder(r.Body).Decode(acctReq); err!=nil{
+			return err
+		}
+	*/
+	acctReq := new(CreateAccountRequest)
+	if err := json.NewDecoder(r.Body).Decode(acctReq); err != nil {
+		return err
+	}
 	return nil
+	/* You can have it like this
+	if err := NewAccount(CreateAccountRequest{
+		FirstName: acctReq.FirstName,
+		LastName: acctReq.LastName,
+	})
+	Or this way*/
+	acct := NewAccount(acctReq.FirstName, acctReq.LastName)
+	if err := s.store.CreateAccount(acct); err != nil {
+		return err
+	}
+	return WriteJSON(w, http.StatusOK, acct)
 }
 
 func (s *APIServer) handleGetAccount(w http.ResponseWriter, r *http.Request) error {
